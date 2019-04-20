@@ -59,7 +59,7 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		getContentPane().add(jp, "North"); 
 		
 		jpt = new JPanel();
-		jpt.setLayout(  new FlowLayout() );
+		jpt.setLayout(new GridLayout());
 		
 		data[0][0]="";
 		data[0][1]="";
@@ -71,6 +71,7 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		jsp = new JScrollPane(jt);
 		jpt.add(jsp);
 		jpt.setBackground(Color.ORANGE);
+		jsp.getViewport().setBackground(Color.ORANGE);
 		getContentPane().add(jpt);
 	}
 	
@@ -88,7 +89,7 @@ public class FindMyTrip extends JFrame implements ActionListener{
 					String m = month.getSelectedItem().toString();
 					String b = budget.getSelectedItem().toString();
 				
-					String query = "Select * from tripdetails where country='"+c+"' and month='"+m+"';";
+					String query = "Select * from tripdetails where country='"+c+"' and month='"+m+"' and price='"+b+"';";
 					System.out.print(query);
 		        
 					ResultSet rs= stmt.executeQuery(query);
@@ -96,15 +97,15 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		            {	
 		            	int q = 0;
 		               
-		                System.out.println("Trip name "+rs.getString(2));
-		                System.out.println("Month "+rs.getString(3));
-		                System.out.println("Price "+rs.getInt(4));
-		                System.out.println("Offer "+rs.getInt(5));
+		                System.out.println("Trip name "+rs.getString("tripname"));
+		                System.out.println("Month "+rs.getString("month"));
+		                System.out.println("Price "+rs.getInt("price"));
+		                System.out.println("Offer "+rs.getString("offer"));
 		                
-		                data[z][q++] = rs.getString(2);
-		                data[z][q++] = rs.getString(3);
-		                data[z][q++] = rs.getString(4);
-		                data[z][q++] = rs.getString(5);
+		                data[z][q++] = rs.getString("tripname");
+		                data[z][q++] = rs.getString("month");
+		                data[z][q++] = String.valueOf(rs.getInt("price"));
+		                data[z][q++] = rs.getString("offer");
 		                z++;
 		                
 		                jt.getColumn("Know more").setCellRenderer(new ButtonRenderer());
