@@ -14,6 +14,7 @@ public class AddTrip implements ItemListener {
     JLabel jl1,jl2,jl3,jl4,jl5,jl6;
     JTextField jt1,jt2,jt3,jt4;
     JTextArea ja;
+    JComboBox <String> tn;
     JButton addbutton,upbutton;
 	JComboBox <String> month;
     String add = "Add a trip";
@@ -30,7 +31,7 @@ public class AddTrip implements ItemListener {
         comboBoxPane.add(cb);
         
         JPanel card1 = new JPanel();
-        card1.setLayout(new GridLayout(2,6,2,1));
+        card1.setLayout(new GridLayout(2,6,20,25));
         card1.setBackground(Color.orange);
         
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/country.jpg");
@@ -42,7 +43,7 @@ public class AddTrip implements ItemListener {
         
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/trip.jpg");
         jl2 = new JLabel(image,SwingConstants.CENTER);
-        jt2 = new JTextField("Trip");
+        jt2 = new JTextField("Trip name");
         jt2.setBackground(Color.ORANGE);
         card1.add(jl2);
         card1.add(jt2);
@@ -100,7 +101,7 @@ public class AddTrip implements ItemListener {
 		card1.add(month);
         
 		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
-        ja = new JTextArea("\n \n \n \n \n \n \n \n Scheduled iternary", 300, 50);
+        ja = new JTextArea("Scheduled iternary", 300, 50);
         ja.setBackground(Color.ORANGE);
         jl6 = new JLabel(image, SwingConstants.CENTER);
         card1.add(jl6);
@@ -108,9 +109,104 @@ public class AddTrip implements ItemListener {
         
          
         JPanel card2 = new JPanel();
-        card2.add(new JTextField("TextField", 20));
+        card2.setLayout(new GridLayout(2,6,20,25));
+        card2.setBackground(Color.green);
+        
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/trip.jpg");
+        jl2 = new JLabel(image,SwingConstants.CENTER);
+        card2.add(jl2);
+        try {
+        	tn = new JComboBox <String>();
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				
+				Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+				Statement stmt = conn.createStatement();
+    				
+				String query = "select tripname from tripdetails;";
+			    	        
+				ResultSet rs =stmt.executeQuery(query);
+				while(rs.next())
+				{
+					tn.addItem(rs.getString("tripname"));
+				}
+		 
+			} catch (SQLException e) {
+				card2.add(new JTextField("No trips created to update"));
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+        card2.add(tn);
+        
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/country.jpg");
+        jl1 = new JLabel(image, SwingConstants.CENTER);
+        jt1 = new JTextField("Country");
+        jt1.setBackground(Color.green);
+        card2.add(jl1);
+        card2.add(jt1);
+       
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/price.jpg");
+        jl3 = new JLabel(image,SwingConstants.CENTER);
+        jt3 = new JTextField("Estimated price");
+        jt3.setBackground(Color.green);
+        card2.add(jl3);
+        card2.add(jt3);
+        
+        upbutton = new JButton("Update the trip");
+        card2.add(upbutton);
+        upbutton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt)
+            {
+              	if(evt.getSource()==upbutton)
+        		{
+        			try {
+        				Class.forName("com.mysql.jdbc.Driver");
+        				try {
+        					
+        					Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+        					Statement stmt = conn.createStatement();
+                				
+        					String query = "update tripdetails set country ='"+jt1.getText()+"', price = "+Integer.parseInt(jt3.getText())+", offer = '"+jt4.getText()+"', month = '"+month.getSelectedItem().toString()+"', iternary = '"+ja.getText()+"' where tripname = '"+tn.getSelectedItem().toString()+"';";
+        				    System.out.print(query);
+        		        
+        					stmt.executeUpdate(query);
+        			 
+        				} catch (SQLException e) {
+        					e.printStackTrace();
+        				}
+        			} catch (ClassNotFoundException e) {
+        				e.printStackTrace();
+        			}
+        		}
+            }
+        });
+        
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/offer.jpg");
+        jl4 = new JLabel(image, SwingConstants.CENTER);
+        jt4 = new JTextField("Any offer");
+        jt4.setBackground(Color.green);
+        card2.add(jl4);
+        card2.add(jt4);
+    
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/month.jpg");
+        jl5 = new JLabel(image,SwingConstants.CENTER);
+        String monthslist[] = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
+    	month = new JComboBox<String>();
+		for (int m = 0; m < monthslist.length; m++)
+			month.addItem(monthslist[m]);
+		card2.add(jl5);
+		card2.add(month);
+        
+		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
+        ja = new JTextArea("Scheduled iternary", 300, 50);
+        ja.setBackground(Color.green);
+        jl6 = new JLabel(image, SwingConstants.CENTER);
+        card2.add(jl6);
+        card2.add(ja);
          
-        //Create the panel that contains the "cards".
+        
         cards = new JPanel(new CardLayout());
         cards.add(card1, add);
         cards.add(card2, update);
