@@ -101,7 +101,7 @@ public class AddTrip implements ItemListener {
 		card1.add(month);
         
 		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
-        ja = new JTextArea("Scheduled iternary", 300, 50);
+        ja = new JTextArea("Scheduled iternary");
         ja.setBackground(Color.ORANGE);
         jl6 = new JLabel(image, SwingConstants.CENTER);
         card1.add(jl6);
@@ -139,6 +139,40 @@ public class AddTrip implements ItemListener {
 			e.printStackTrace();
 		}
         card2.add(tn);
+        tn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                
+                JComboBox comboBox = (JComboBox) event.getSource();
+
+                Object selected = comboBox.getSelectedItem();
+                try {
+    				
+    				Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+    				Statement stmt = conn.createStatement();
+        				
+    				String query = "select * from tripdetails where tripname = '"+ selected.toString()+"';";
+    			    	        
+    				ResultSet rs =stmt.executeQuery(query);
+    				while(rs.next())
+    				{
+    					jt1.setText(rs.getString("country"));
+     	                jt3.setText(String.valueOf(rs.getInt("price")));
+     	                month.setSelectedItem(rs.getString("month"));
+ 		                jt4.setText(rs.getString("offer"));
+ 		                ja.selectAll();
+ 		                ja.replaceSelection("");
+ 		                ja.insert(rs.getString("iternary"), 0);
+    				}
+    		 
+    			} catch (SQLException e) {
+    				card2.add(new JTextField("No trips created to update"));
+    				e.printStackTrace();
+    			}
+    		
+    		
+
+            }
+        });
         
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/country.jpg");
         jl1 = new JLabel(image, SwingConstants.CENTER);
@@ -200,7 +234,7 @@ public class AddTrip implements ItemListener {
 		card2.add(month);
         
 		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
-        ja = new JTextArea("Scheduled iternary", 300, 50);
+        ja = new JTextArea("Scheduled iternary");
         ja.setBackground(Color.green);
         jl6 = new JLabel(image, SwingConstants.CENTER);
         card2.add(jl6);
