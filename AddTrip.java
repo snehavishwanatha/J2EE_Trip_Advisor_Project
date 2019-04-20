@@ -10,6 +10,7 @@ import javax.swing.*;
  
 public class AddTrip implements ItemListener {
     JPanel cards; 
+    ImageIcon image;
     JLabel jl1,jl2,jl3,jl4,jl5,jl6;
     JTextField jt1,jt2,jt3,jt4;
     JTextArea ja;
@@ -19,8 +20,9 @@ public class AddTrip implements ItemListener {
     String update = "Update existing trip";
      
     public void addComponentToPane(Container pane) {
-        //Put the JComboBox in a JPanel to get a nicer look.
-        JPanel comboBoxPane = new JPanel(); //use FlowLayout
+
+        JPanel comboBoxPane = new JPanel(); 
+        comboBoxPane.setBackground(Color.BLUE);
         String comboBoxItems[] = { add, update };
         JComboBox <String> cb = new JComboBox <String> (comboBoxItems);
         cb.setEditable(false);
@@ -29,22 +31,25 @@ public class AddTrip implements ItemListener {
         
         JPanel card1 = new JPanel();
         card1.setLayout(new GridLayout(2,6,2,1));
-        card1.setBackground(Color.GREEN);
+        card1.setBackground(Color.orange);
         
-        jl1 = new JLabel("Country", SwingConstants.CENTER);
-        jt1 = new JTextField(20);
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/country.jpg");
+        jl1 = new JLabel(image, SwingConstants.CENTER);
+        jt1 = new JTextField("Country");
         jt1.setBackground(Color.ORANGE);
         card1.add(jl1);
         card1.add(jt1);
         
-        jl2 = new JLabel("Trip Name",SwingConstants.CENTER);
-        jt2 = new JTextField(20);
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/trip.jpg");
+        jl2 = new JLabel(image,SwingConstants.CENTER);
+        jt2 = new JTextField("Trip");
         jt2.setBackground(Color.ORANGE);
         card1.add(jl2);
         card1.add(jt2);
         
-        jl3 = new JLabel("Price",SwingConstants.CENTER);
-        jt3 = new JTextField(20);
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/price.jpg");
+        jl3 = new JLabel(image,SwingConstants.CENTER);
+        jt3 = new JTextField("Estimated price");
         jt3.setBackground(Color.ORANGE);
         card1.add(jl3);
         card1.add(jt3);
@@ -78,14 +83,15 @@ public class AddTrip implements ItemListener {
             }
         });
         
-        
-        jl4 = new JLabel("Offers", SwingConstants.CENTER);
-        jt4 = new JTextField(20);
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/offer.jpg");
+        jl4 = new JLabel(image, SwingConstants.CENTER);
+        jt4 = new JTextField("Any offer");
         jt4.setBackground(Color.ORANGE);
         card1.add(jl4);
         card1.add(jt4);
     
-        jl5 = new JLabel("Month",SwingConstants.CENTER);
+        image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/month.jpg");
+        jl5 = new JLabel(image,SwingConstants.CENTER);
         String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
     	month = new JComboBox<String>();
 		for (int m = 0; m < months.length; m++)
@@ -93,9 +99,10 @@ public class AddTrip implements ItemListener {
 		card1.add(jl5);
 		card1.add(month);
         
-        ja = new JTextArea(200,200);
+		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
+        ja = new JTextArea("\n \n \n \n \n \n \n \n Scheduled iternary", 300, 50);
         ja.setBackground(Color.ORANGE);
-        jl6 = new JLabel("Iternary", SwingConstants.CENTER);
+        jl6 = new JLabel(image, SwingConstants.CENTER);
         card1.add(jl6);
         card1.add(ja);
         
