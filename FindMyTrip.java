@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class FindMyTrip extends JFrame implements ActionListener{
 	JComboBox <String> country; 
@@ -19,6 +21,8 @@ public class FindMyTrip extends JFrame implements ActionListener{
 	JScrollPane jsp;
 	String[][] data = new String[5][6];
 	JLabel iternary;
+	 ArrayList<Icon> list = new ArrayList<Icon>();
+     JLabel labelicon,labeliconleft;
 	
 	String countries[] = {"Singapore" , "Bhutan" ,"Nepal", "Hong Kong", "Macau", "Dubai", "Thailand" ,"India"};
 	String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
@@ -59,8 +63,11 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		getContentPane().add(jp, "North"); 
 		
 		jpt = new JPanel();
-		jpt.setLayout(new GridLayout());
+		jpt.setLayout(new GridLayout(1,3));
 		
+		labeliconleft = new JLabel();
+	    jpt.add(labeliconleft);
+	       
 		data[0][0]="";
 		data[0][1]="";
 		data[0][2]="";
@@ -72,9 +79,32 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		jpt.add(jsp);
 		jpt.setBackground(Color.ORANGE);
 		jsp.getViewport().setBackground(Color.ORANGE);
+		
+		Timer timer = new Timer(1000, new ActionListener() {
+
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            update();
+	        }
+	    });
+	
+		for (int r = 0; r < 11; r++)
+		{
+		list.add(new ImageIcon(new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/"+String.valueOf(r)+".jpg").getImage().getScaledInstance(700, 700, Image.SCALE_DEFAULT)));
+    	}
+        labelicon = new JLabel();
+        jpt.add(labelicon);
+        timer.start();
+	    	   
 		getContentPane().add(jpt);
 	}
-	
+
+	    private void update() {
+	        Collections.shuffle(list);
+	        int index = 0;
+	        labelicon.setIcon(list.get(index++));
+	        labeliconleft.setIcon(list.get(index++));
+	    }
 	public void actionPerformed(ActionEvent evt)
 	{
 		if(evt.getSource()==search)
