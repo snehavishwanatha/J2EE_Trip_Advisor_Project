@@ -166,8 +166,9 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		                            break;
 		                        }
 		                    }
-		                 
+		                    tableColumn.setMinWidth(75);
 		                    tableColumn.setPreferredWidth( preferredWidth );
+		                    
 		                }
 		                
 		                jt.repaint();
