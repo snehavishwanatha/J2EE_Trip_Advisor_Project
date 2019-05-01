@@ -79,10 +79,22 @@ public class AddTrip implements ItemListener {
         					jt3.setText("Estimated price");
         					jt4.setText("Any offer");
         					ja.setText("Scheduled Iternary");
+        					Statement check = conn.createStatement();
+        					String cquery = "select * from tripdetails where tripname='"+jt2.getText()+"';";
         					
-        					
-        				} catch (SQLException e) {
-        					e.printStackTrace();
+        					ResultSet rs = check.executeQuery(cquery);
+        					int f = 1;
+        					while(rs.next())
+        					{
+        						JOptionPane.showMessageDialog(pane, "Trip added");
+        						f = 0;
+        					}
+        					if(f==1)
+        						JOptionPane.showMessageDialog(pane, "Trip not added - Duplicate entry");
+        			 
+        				} catch (Exception e) {
+        					//e.printStackTrace();
+        					JOptionPane.showMessageDialog(pane, "Trip not added - Empty value(s) or Invalid entry");
         				}
         			} catch (ClassNotFoundException e) {
         				e.printStackTrace();
@@ -162,9 +174,9 @@ public class AddTrip implements ItemListener {
     				ResultSet rs =stmt.executeQuery(query);
     				while(rs.next())
     				{
-    					ju1.setText(rs.getString("country"));
-     	                ju3.setText(String.valueOf(rs.getInt("price")));
-     	                month.setSelectedItem(rs.getString("month"));
+    				ju1.setText(rs.getString("country"));
+     	                	ju3.setText(String.valueOf(rs.getInt("price")));
+     	                	month.setSelectedItem(rs.getString("month"));
  		                ju4.setText(rs.getString("offer"));
  		                ju.selectAll();
  		                ju.replaceSelection("");
@@ -213,9 +225,26 @@ public class AddTrip implements ItemListener {
         				    System.out.print(query);
         		        
         					stmt.executeUpdate(query);
+        			 		Statement check = conn.createStatement();
+        					String cquery = "select * from tripdetails where tripname='"+tn.getSelectedItem().toString()+"';";
+        					
+        					ResultSet rs = check.executeQuery(cquery);
+        					int f = 1;
+        					while(rs.next())
+        					{
+        						if(rs.getString("country").equals(ju1.getText()) && rs.getInt("price")==Integer.parseInt(ju3.getText()) && rs.getString("offer").equals(ju4.getText()) && rs.getString("iternary").equals(ju.getText()) && rs.getString("month").equals(month.getSelectedItem().toString()))
+        						{	
+        							JOptionPane.showMessageDialog(pane, "Trip Updated");
+        							f = 0;
+        						}
+        					}
+        					if(f==1)
+        						JOptionPane.showMessageDialog(pane, "Trip not Updated - Invalid Entry");
         			 
-        				} catch (SQLException e) {
-        					e.printStackTrace();
+        					
+        				} catch (Exception e) {
+        					//e.printStackTrace();
+        					JOptionPane.showMessageDialog(pane, "Trip not Updated - Invalid Entry");
         				}
         			} catch (ClassNotFoundException e) {
         				e.printStackTrace();
