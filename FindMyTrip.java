@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
 import java.awt.Color;
 import java.awt.*;
 import java.awt.event.*;
@@ -141,23 +144,43 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		                jt.getColumn("Know more").setCellRenderer(new ButtonRenderer());
 		                jt.getColumn("Know more").setCellEditor(new ButtonEditor(new JCheckBox()));
 		                
-		                jt.repaint();
 		               
+		                jt.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
+		                
+		                for (int column = 0; column < jt.getColumnCount()-1; column++)
+		                {
+		                    TableColumn tableColumn = jt.getColumnModel().getColumn(column);
+		                    int preferredWidth = tableColumn.getMinWidth();
+		                    int maxWidth = tableColumn.getMaxWidth();
+		                 
+		                    for (int row = 0; row < jt.getRowCount(); row++)
+		                    {
+		                        TableCellRenderer cellRenderer = jt.getCellRenderer(row, column);
+		                        Component co = jt.prepareRenderer(cellRenderer, row, column);
+		                        int width = co.getPreferredSize().width + jt.getIntercellSpacing().width;
+		                        preferredWidth = Math.max(preferredWidth, width);
+		                 
+		                        if (preferredWidth >= maxWidth)
+		                        {
+		                            preferredWidth = maxWidth;
+		                            break;
+		                        }
+		                    }
+		                 
+		                    tableColumn.setPreferredWidth( preferredWidth );
+		                }
+		                
+		                jt.repaint();
 		            }
 		            for (int i=0;i<3;i++)
 		            	for (int j=0;j<3;j++)
-		            		System.out.println(data[i][j]);
-		            
+		            		System.out.println(data[i][j]);	            
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			
-			
 		}
 	}
-	
-	
 }

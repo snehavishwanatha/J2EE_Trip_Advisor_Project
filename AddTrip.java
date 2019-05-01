@@ -76,8 +76,11 @@ public class AddTrip implements ItemListener {
         					stmt.executeUpdate(query);
         					
         					jt1.setText("Country");
-        					 //siddu
-        			 
+        					jt3.setText("Estimated price");
+        					jt4.setText("Any offer");
+        					ja.setText("Scheduled Iternary");
+        					
+        					
         				} catch (SQLException e) {
         					e.printStackTrace();
         				}
@@ -159,13 +162,13 @@ public class AddTrip implements ItemListener {
     				ResultSet rs =stmt.executeQuery(query);
     				while(rs.next())
     				{
-    					jt1.setText(rs.getString("country"));
-     	                jt3.setText(String.valueOf(rs.getInt("price")));
+    					ju1.setText(rs.getString("country"));
+     	                ju3.setText(String.valueOf(rs.getInt("price")));
      	                month.setSelectedItem(rs.getString("month"));
- 		                jt4.setText(rs.getString("offer"));
- 		                ja.selectAll();
- 		                ja.replaceSelection("");
- 		                ja.insert(rs.getString("iternary"), 0);
+ 		                ju4.setText(rs.getString("offer"));
+ 		                ju.selectAll();
+ 		                ju.replaceSelection("");
+ 		                ju.insert(rs.getString("iternary"), 0);
     				}
     		 
     			} catch (SQLException e) {
