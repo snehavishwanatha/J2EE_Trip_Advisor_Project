@@ -13,10 +13,11 @@ public class AddTrip implements ItemListener {
     ImageIcon image;
     JLabel jl1,jl2,jl3,jl4,jl5,jl6;
     JTextField jt1,jt2,jt3,jt4;
-    JTextArea ja;
+    JTextField ju1,ju2,ju3,ju4;
+    JTextArea ja,ju;
     JComboBox <String> tn;
     JButton addbutton,upbutton;
-	JComboBox <String> month;
+	JComboBox <String> month, update_month;
     String add = "Add a trip";
     String update = "Update existing trip";
      
@@ -73,6 +74,9 @@ public class AddTrip implements ItemListener {
         				    System.out.print(query);
         		        
         					stmt.executeUpdate(query);
+        					
+        					jt1.setText("Country");
+        					 //siddu
         			 
         				} catch (SQLException e) {
         					e.printStackTrace();
@@ -176,17 +180,17 @@ public class AddTrip implements ItemListener {
         
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/country.jpg");
         jl1 = new JLabel(image, SwingConstants.CENTER);
-        jt1 = new JTextField("Country");
-        jt1.setBackground(Color.green);
+        ju1 = new JTextField("Country");
+        ju1.setBackground(Color.green);
         card2.add(jl1);
-        card2.add(jt1);
+        card2.add(ju1);
        
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/price.jpg");
         jl3 = new JLabel(image,SwingConstants.CENTER);
-        jt3 = new JTextField("Estimated price");
-        jt3.setBackground(Color.green);
+        ju3 = new JTextField("Estimated price");
+        ju3.setBackground(Color.green);
         card2.add(jl3);
-        card2.add(jt3);
+        card2.add(ju3);
         
         upbutton = new JButton("Update the trip");
         card2.add(upbutton);
@@ -202,7 +206,7 @@ public class AddTrip implements ItemListener {
         					Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
         					Statement stmt = conn.createStatement();
                 				
-        					String query = "update tripdetails set country ='"+jt1.getText()+"', price = "+Integer.parseInt(jt3.getText())+", offer = '"+jt4.getText()+"', month = '"+month.getSelectedItem().toString()+"', iternary = '"+ja.getText()+"' where tripname = '"+tn.getSelectedItem().toString()+"';";
+        					String query = "update tripdetails set country ='"+ju1.getText()+"', price = "+Integer.parseInt(ju3.getText())+", offer = '"+ju4.getText()+"', month = '"+month.getSelectedItem().toString()+"', iternary = '"+ju.getText()+"' where tripname = '"+tn.getSelectedItem().toString()+"';";
         				    System.out.print(query);
         		        
         					stmt.executeUpdate(query);
@@ -219,26 +223,26 @@ public class AddTrip implements ItemListener {
         
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/offer.jpg");
         jl4 = new JLabel(image, SwingConstants.CENTER);
-        jt4 = new JTextField("Any offer");
-        jt4.setBackground(Color.green);
+        ju4 = new JTextField("Any offer");
+        ju4.setBackground(Color.green);
         card2.add(jl4);
-        card2.add(jt4);
+        card2.add(ju4);
     
         image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/month.jpg");
         jl5 = new JLabel(image,SwingConstants.CENTER);
         String monthslist[] = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
-    	month = new JComboBox<String>();
+    	update_month = new JComboBox<String>();
 		for (int m = 0; m < monthslist.length; m++)
-			month.addItem(monthslist[m]);
+			update_month.addItem(monthslist[m]);
 		card2.add(jl5);
-		card2.add(month);
+		card2.add(update_month);
         
 		image = new ImageIcon("/home/sneha/eclipse-workspace/Trip Advisor/src/it.jpg");
-        ja = new JTextArea("Scheduled iternary");
-        ja.setBackground(Color.green);
+        ju = new JTextArea("Scheduled iternary");
+        ju.setBackground(Color.green);
         jl6 = new JLabel(image, SwingConstants.CENTER);
         card2.add(jl6);
-        card2.add(ja);
+        card2.add(ju);
          
         
         cards = new JPanel(new CardLayout());
