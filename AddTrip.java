@@ -224,15 +224,10 @@ public class AddTrip implements ItemListener {
         					Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
         					Statement stmt = conn.createStatement();
                 				
-        					String query = "update tripdetails set country ='"+ju1.getText()+"', price = "+Integer.parseInt(ju3.getText())+", offer = '"+ju4.getText()+"', month = '"+month.getSelectedItem().toString()+"', iternary = '"+ju.getText()+"' where tripname = '"+tn.getSelectedItem().toString()+"';";
+        					String query = "update tripdetails set country ='"+ju1.getText()+"', price = "+Integer.parseInt(ju3.getText())+", offer = '"+ju4.getText()+"', month = '"+update_month.getSelectedItem().toString()+"', iternary = '"+ju.getText()+"' where tripname = '"+tn.getSelectedItem().toString()+"';";
         				    System.out.print(query);
         		        
         					stmt.executeUpdate(query);
-        					
-        					ju1.setText("Country");
-        					ju3.setText("Estimated Price");
-        					ju4.setText("Any Offer");
-        					ju.setText("Scheduled Iternary");
         					
         					Statement check = conn.createStatement();
         					String cquery = "select * from tripdetails where tripname='"+tn.getSelectedItem().toString()+"';";
@@ -241,14 +236,18 @@ public class AddTrip implements ItemListener {
         					int f = 1;
         					while(rs.next())
         					{
-        						if(rs.getString("country").equals(ju1.getText()) && rs.getInt("price")==Integer.parseInt(ju3.getText()) && rs.getString("offer").equals(ju4.getText()) && rs.getString("iternary").equals(ju.getText()) && rs.getString("month").equals(month.getSelectedItem().toString()))
+        						if(rs.getString("country").equals(ju1.getText()) && rs.getInt("price")==Integer.parseInt(ju3.getText()) && rs.getString("offer").equals(ju4.getText()) && rs.getString("iternary").equals(ju.getText()) && rs.getString("month").equals(update_month.getSelectedItem().toString()))
         						{	
         							JOptionPane.showMessageDialog(pane, "Trip Updated");
         							f = 0;
+                					ju1.setText("Country");
+                					ju3.setText("Estimated Price");
+                					ju4.setText("Any Offer");
+                					ju.setText("Scheduled Iternary");
         						}
         					}
         					if(f==1)
-        						JOptionPane.showMessageDialog(pane, "Trip not Updated - Invalid Entry");
+        						JOptionPane.showMessageDialog(pane, "Trip not Updated");
         			 
         					
         				} catch (Exception e) {
