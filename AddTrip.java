@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.*;
  
 public class AddTrip implements ItemListener {
@@ -15,17 +14,18 @@ public class AddTrip implements ItemListener {
     JTextField jt1,jt2,jt3,jt4;
     JTextField ju1,ju2,ju3,ju4;
     JTextArea ja,ju;
-    JComboBox <String> tn;
-    JButton addbutton,upbutton;
+    JComboBox <String> tn, dtn;
+    JButton addbutton,upbutton,delbutton;
 	JComboBox <String> month, update_month;
     String add = "Add a trip";
     String update = "Update existing trip";
+    String delete = "Delete a trip";
      
     public void addComponentToPane(Container pane) {
 
         JPanel comboBoxPane = new JPanel(); 
         comboBoxPane.setBackground(Color.BLUE);
-        String comboBoxItems[] = { add, update };
+        String comboBoxItems[] = { add, update, delete };
         JComboBox <String> cb = new JComboBox <String> (comboBoxItems);
         cb.setEditable(false);
         cb.addItemListener(this);
@@ -79,6 +79,8 @@ public class AddTrip implements ItemListener {
         					jt3.setText("Estimated price");
         					jt4.setText("Any offer");
         					ja.setText("Scheduled Iternary");
+        					
+        					
         					Statement check = conn.createStatement();
         					String cquery = "select * from tripdetails where tripname='"+jt2.getText()+"';";
         					
@@ -93,9 +95,10 @@ public class AddTrip implements ItemListener {
         						JOptionPane.showMessageDialog(pane, "Trip not added - Duplicate entry");
         			 
         				} catch (Exception e) {
-        					//e.printStackTrace();
+        					e.printStackTrace();
         					JOptionPane.showMessageDialog(pane, "Trip not added - Empty value(s) or Invalid entry");
         				}
+
         			} catch (ClassNotFoundException e) {
         				e.printStackTrace();
         			}
@@ -174,9 +177,9 @@ public class AddTrip implements ItemListener {
     				ResultSet rs =stmt.executeQuery(query);
     				while(rs.next())
     				{
-    				ju1.setText(rs.getString("country"));
-     	                	ju3.setText(String.valueOf(rs.getInt("price")));
-     	                	month.setSelectedItem(rs.getString("month"));
+    					ju1.setText(rs.getString("country"));
+     	                ju3.setText(String.valueOf(rs.getInt("price")));
+     	                month.setSelectedItem(rs.getString("month"));
  		                ju4.setText(rs.getString("offer"));
  		                ju.selectAll();
  		                ju.replaceSelection("");
@@ -225,7 +228,13 @@ public class AddTrip implements ItemListener {
         				    System.out.print(query);
         		        
         					stmt.executeUpdate(query);
-        			 		Statement check = conn.createStatement();
+        					
+        					ju1.setText("Country");
+        					ju3.setText("Estimated Price");
+        					ju4.setText("Any Offer");
+        					ju.setText("Scheduled Iternary");
+        					
+        					Statement check = conn.createStatement();
         					String cquery = "select * from tripdetails where tripname='"+tn.getSelectedItem().toString()+"';";
         					
         					ResultSet rs = check.executeQuery(cquery);
@@ -276,13 +285,78 @@ public class AddTrip implements ItemListener {
         card2.add(jl6);
         card2.add(ju);
          
+        JPanel card3 = new JPanel();
+        card3.setLayout(new FlowLayout(5,55,70));
+        card3.setBackground(Color.orange);
         
+       
+        try {
+        	dtn = new JComboBox <String>();
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				
+				Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+				Statement stmt = conn.createStatement();
+    				
+				String query = "select tripname from tripdetails;";
+			    	        
+				ResultSet rs =stmt.executeQuery(query);
+				while(rs.next())
+				{
+					dtn.addItem(rs.getString("tripname"));
+				}
+		 
+			} catch (SQLException e) {
+				card2.add(new JTextField("No trips created to delete"));
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+        card3.add(dtn);
+        delbutton = new JButton("Delete trip");
+        card3.add(delbutton);
+        delbutton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent evt) {
+        		
+        		if(evt.getSource()==delbutton)
+        		{
+        			try {
+        				Class.forName("com.mysql.jdbc.Driver");
+        				try {
+        					
+        					Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+        					Statement stmt = conn.createStatement();
+        					
+        					String delquery = "delete from tripdetails where tripname='"+dtn.getSelectedItem().toString()+"';";
+        					stmt.executeUpdate(delquery);
+        					
+        					String check = "select * from tripdetails where tripname='"+dtn.getSelectedItem().toString()+"';";
+        					ResultSet rs = stmt.executeQuery(check);
+        					if(!rs.isBeforeFirst())
+        					{
+        						JOptionPane.showMessageDialog(pane, "Trip entry deleted");
+        					}
+        					else
+        						JOptionPane.showMessageDialog(pane, "Deletion not possible");
+        					
+        				} catch(Exception e) {
+        					e.printStackTrace();
+        				}
+        			} catch(Exception e) {
+        				e.printStackTrace();
+        			}
+        		}
+        	}
+        });
         cards = new JPanel(new CardLayout());
         cards.add(card1, add);
         cards.add(card2, update);
-         
+        cards.add(card3, delete);
+        
         pane.add(comboBoxPane, BorderLayout.PAGE_START);
         pane.add(cards, BorderLayout.CENTER);
+        
     }
      
     public void itemStateChanged(ItemEvent evt) {
