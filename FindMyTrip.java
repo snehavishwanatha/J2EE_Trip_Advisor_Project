@@ -1,7 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
 import java.awt.Color;
 import java.awt.*;
 import java.awt.event.*;
@@ -42,10 +41,10 @@ public class FindMyTrip extends JFrame implements ActionListener{
 		head = new JLabel("I want my holiday in...",SwingConstants.CENTER);
 		jp.add(head,"North");
 		
-		country = new JComboBox<String>();
+		/*country = new JComboBox<String>();
 		for (int c = 0; c < countries.length; c++)
-			country.addItem(countries[c]);
-		jp.add(country,"Center");
+			country.addItem(countries[c]);*/
+		
 				
 		month = new JComboBox<String>();
 		for (int m = 0; m < months.length; m++)
@@ -100,6 +99,31 @@ public class FindMyTrip extends JFrame implements ActionListener{
         timer.start();
 	    	   
 		getContentPane().add(jpt);
+		
+		try {
+        	country = new JComboBox <String>();
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				
+				Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/trip","root","root");
+				Statement stmt = conn.createStatement();
+    				
+				String query = "select distinct country from tripdetails;";
+			    	        
+				ResultSet rs =stmt.executeQuery(query);
+				while(rs.next())
+				{
+					country.addItem(rs.getString("country"));
+				}
+		 
+			} catch (SQLException e) {
+				jp.add(new JTextField("No trips created to update"));
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		jp.add(country,"Center");
 	}
 
 	    private void update() {
@@ -122,60 +146,67 @@ public class FindMyTrip extends JFrame implements ActionListener{
 					String m = month.getSelectedItem().toString();
 					String b = budget.getSelectedItem().toString();
 				
-					String query = "Select * from tripdetails where country='"+c+"' and month='"+m+"' and price='"+b+"';";
+					String query = "Select * from tripdetails where country='"+c+"' and (month='"+m+"' or price<='"+b+"');";
 					System.out.print(query);
 		        
 					ResultSet rs= stmt.executeQuery(query);
-					while(rs.next())
-		            {	
-		            	int q = 0;
-		               
-		                System.out.println("Trip name "+rs.getString("tripname"));
-		                System.out.println("Month "+rs.getString("month"));
-		                System.out.println("Price "+rs.getInt("price"));
-		                System.out.println("Offer "+rs.getString("offer"));
-		                
-		                data[z][q++] = rs.getString("tripname");
-		                data[z][q++] = rs.getString("month");
-		                data[z][q++] = String.valueOf(rs.getInt("price"));
-		                data[z][q++] = rs.getString("offer");
-		                z++;
-		                
-		                jt.getColumn("Know more").setCellRenderer(new ButtonRenderer());
-		                jt.getColumn("Know more").setCellEditor(new ButtonEditor(new JCheckBox()));
-		                
-		               
-		                jt.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
-		                
-		                for (int column = 0; column < jt.getColumnCount()-1; column++)
-		                {
-		                    TableColumn tableColumn = jt.getColumnModel().getColumn(column);
-		                    int preferredWidth = tableColumn.getMinWidth();
-		                    int maxWidth = tableColumn.getMaxWidth();
-		                 
-		                    for (int row = 0; row < jt.getRowCount(); row++)
-		                    {
-		                        TableCellRenderer cellRenderer = jt.getCellRenderer(row, column);
-		                        Component co = jt.prepareRenderer(cellRenderer, row, column);
-		                        int width = co.getPreferredSize().width + jt.getIntercellSpacing().width;
-		                        preferredWidth = Math.max(preferredWidth, width);
-		                 
-		                        if (preferredWidth >= maxWidth)
-		                        {
-		                            preferredWidth = maxWidth;
-		                            break;
-		                        }
-		                    }
-		                    tableColumn.setMinWidth(75);
-		                    tableColumn.setPreferredWidth( preferredWidth );
-		                    
-		                }
-		                
-		                jt.repaint();
-		            }
-		            for (int i=0;i<3;i++)
-		            	for (int j=0;j<3;j++)
-		            		System.out.println(data[i][j]);	            
+					if(!rs.isBeforeFirst())
+					{
+						JOptionPane.showMessageDialog(search,"Sorry no trips exists as per your choice!");
+					}
+					else {
+						while(rs.next())
+			            {	
+			            	int q = 0;
+			               
+			                System.out.println("Trip name "+rs.getString("tripname"));
+			                System.out.println("Month "+rs.getString("month"));
+			                System.out.println("Price "+rs.getInt("price"));
+			                System.out.println("Offer "+rs.getString("offer"));
+			                
+			                data[z][q++] = rs.getString("tripname");
+			                data[z][q++] = rs.getString("month");
+			                data[z][q++] = String.valueOf(rs.getInt("price"));
+			                data[z][q++] = rs.getString("offer");
+			                z++;
+			                
+			                jt.getColumn("Know more").setCellRenderer(new ButtonRenderer());
+			                jt.getColumn("Know more").setCellEditor(new ButtonEditor(new JCheckBox()));
+			                
+			               
+			                jt.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
+			                
+			                for (int column = 0; column < jt.getColumnCount()-1; column++)
+			                {
+			                    TableColumn tableColumn = jt.getColumnModel().getColumn(column);
+			                    int preferredWidth = tableColumn.getMinWidth();
+			                    int maxWidth = tableColumn.getMaxWidth();
+			                 
+			                    for (int row = 0; row < jt.getRowCount(); row++)
+			                    {
+			                        TableCellRenderer cellRenderer = jt.getCellRenderer(row, column);
+			                        Component co = jt.prepareRenderer(cellRenderer, row, column);
+			                        int width = co.getPreferredSize().width + jt.getIntercellSpacing().width;
+			                        preferredWidth = Math.max(preferredWidth, width);
+			                 
+			                        if (preferredWidth >= maxWidth)
+			                        {
+			                            preferredWidth = maxWidth;
+			                            break;
+			                        }
+			                    }
+			                    tableColumn.setMinWidth(55);
+			                    tableColumn.setPreferredWidth( preferredWidth );
+			                    
+			                }
+			                
+			                jt.repaint();
+			            }
+			            for (int i=0;i<3;i++)
+			            	for (int j=0;j<3;j++)
+			            		System.out.println(data[i][j]);	
+					}
+					            
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
